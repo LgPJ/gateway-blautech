@@ -1,0 +1,26 @@
+server:
+  port: 8080 # Puerto del gateway
+
+spring:
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      routes:
+        - id: backend-service
+          uri: http://localhost:8081 # URL del servicio backend
+          predicates:
+            - Path=/api/** # Rutas que coincidan con /api/** se enrutan al backend
+          filters:
+            - StripPrefix=1 # Quita el primer segmento del path (ejemplo: /api/users -> /users)
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:3000" # URL del frontend
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
